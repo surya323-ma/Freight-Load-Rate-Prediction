@@ -1,30 +1,4 @@
-"""Train and validate the freight rate model.
 
-Validation strategy
---------------------
-The labeled data (data/train_test.csv) spans 2025-01-01 .. 2025-10-31, and the
-data we must finally score (data/validation.csv) spans 2025-11-01 ..
-2025-12-31 -- i.e. entirely *after* the labeled window. That is a forecasting
-problem, not an interpolation problem, so a random K-fold split would leak
-future-like information backwards and overstate accuracy.
-
-We therefore use a **time-based holdout**: sort the labeled data by date and
-hold out the most recent ~15% of days (2025-09-14 .. 2025-10-31) as the
-validation set, training only on data strictly before that window. This
-mirrors the real deployment gap (train on the past, predict an unseen future
-window) and is the number we trust for judging generalization.
-
-As a secondary sanity check we also report 5-fold random cross-validation
-metrics; if the two disagree sharply it's a signal of temporal drift, which
-is useful to know but the time-based holdout is the primary number.
-
-Once the holdout confirms the model behaves well, we refit on *all* of
-data/train_test.csv (still with the same feature pipeline) to produce the
-final model used for validation_predictions.csv and the December chart --
-using every labeled example available is preferable once the validation
-protocol above has already told us how the model performs on unseen future
-data.
-"""
 from __future__ import annotations
 
 import json
