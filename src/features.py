@@ -1,22 +1,4 @@
-"""Feature engineering shared by training and inference.
-
-Design notes
-------------
-- Coordinates are deterministic per city name (verified during EDA), so we keep
-  them as continuous geo features and also derive a haversine distance as a
-  sanity cross-check against the provided `distance` column.
-- `weight` has a small number of missing values and a larger number of rows
-  where the sign is flipped negative (impossible for a physical shipment
-  weight). We take the absolute value and impute remaining missingness with
-  the equipment-specific median, learned on the training split only.
-- `market_index` has a small number of missing values, imputed with the
-  global median from the training split.
-- `date` is decomposed into calendar signal (month, day-of-week, day-of-year,
-  cyclical encodings) since freight rates move seasonally and weekly.
-- `pickup`/`delivery`/`equipment` are categorical and passed to LightGBM as
-  native categoricals (integer-coded) rather than one-hot, which handles the
-  64x64 lane cardinality far more efficiently.
-"""
+"""Feature engineering shared by training and inference."""
 from __future__ import annotations
 
 import numpy as np
